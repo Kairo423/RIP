@@ -1,19 +1,13 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel, create_engine, Session
+from sqlalchemy.ext.asyncio import create_async_engine
 
-# Замените на вашу строку подключения
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:igkirill23@localhost/estate_agency"
 
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:igkirill23@localhost:5432/estate_agency"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+def get_db():
+    with Session(engine) as session:
+        yield session
 
-# Функция для получения сессии БД
-async def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)

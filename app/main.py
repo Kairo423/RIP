@@ -1,30 +1,23 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
+from database.database import create_db_and_tables
 import uvicorn
-from database.database import get_db, engine, Base
-from sqlalchemy.orm import Session
+from api.endpoints.clients_endpoints import router as clients_router
 
-app = FastAPI()
+app = FastAPI(title="Estate Agency", version="1.0.0")
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
+
+app.include_router(clients_router)
 
 @app.get("/")
-def root():
-    return("Hello Woorld!")
+def read_root():
+    return {"message": "Welcome to My FastAPI App!"}
 
-@app.get("/")
-def read_root(db: Session = Depends(get_db)):
-    # Теперь у вас есть подключение к БД через db
-    # Пример: result = db.execute("SELECT version()")
-    return {"message": "Connected to PostgreSQL!"}
-
-@app.get("/test-connection")
-def test_connection(db: Session = Depends(get_db)):
-    try:
-        # Простой тест подключения
-        result = db.execute("SELECT 1")
-        return {"status": "success", "message": "Database connection working"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-
-
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
