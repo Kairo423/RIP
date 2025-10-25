@@ -14,6 +14,9 @@ def create_client(client: Client, db: Session = Depends(get_db)):
     db_client = client_crud.get_client_by_email(db, email=client.email)
     if db_client:
         raise HTTPException(status_code=400, detail="Email already registered")
+    db_phone = client_crud.get_client_by_phone(db, phone=client.phone)
+    if db_phone:
+        raise HTTPException(status_code=400, detail="Phone number already registered")
     return client_crud.create_client(db=db, client=client)
 
 @router.get("/", response_model=List[Client])

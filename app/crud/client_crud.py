@@ -8,6 +8,10 @@ def get_client_by_email(db: Session, email: str) -> Client | None:
     statement = select(Client).where(Client.email == email)
     return db.exec(statement).first()
 
+def get_client_by_phone(db: Session, phone: str) -> Client | None:
+    statement = select(Client).where(Client.phone == phone)
+    return db.exec(statement).first()
+
 def get_clients(db: Session, skip: int = 0, limit: int = 100) -> list[Client]:
     statement = select(Client).offset(skip).limit(limit)
     return db.exec(statement).all()
