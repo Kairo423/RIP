@@ -1,5 +1,9 @@
-from sqlmodel import SQLModel, Field
-from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from models.restrictions import Restriction
 
 class RestrictionType(SQLModel, table=True):
     __tablename__ = "restriction_types"
@@ -7,6 +11,8 @@ class RestrictionType(SQLModel, table=True):
     code: str = Field(primary_key=True, max_length=50, description="Код ограничения прав собственности")
     name: str = Field(nullable=False, unique=True, max_length=150, description="Наименование ограничения")
     description: Optional[str] = Field(default=None, description="Описание ограничения")
+
+    restrictions: list["Restriction"] = Relationship(back_populates="restriction_type")
 
     class Config:
         arbitrary_types_allowed = True
