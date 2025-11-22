@@ -80,3 +80,6 @@ Thumbs.db
 
 # Local configuration
 local_settings.py
+
+# Игнорирование папки node_modules в frontend
+frontend/node_modules/
