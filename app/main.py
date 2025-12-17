@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 from database.database import create_db_and_tables
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from api.endpoints import all_routers
 
 app = FastAPI(title="Estate Agency", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Ваш React адрес
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def on_startup():

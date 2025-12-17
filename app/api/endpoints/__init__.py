@@ -6,6 +6,7 @@ from .restriction_types_endpoints import router as restriction_types_router
 from .ownership_endpoints import router as ownership_router
 from .restrictions_endpoints import router as restrictions_router
 from .deals_endpoints import router as deals_router
+from .auth import router as auth_router
 
 # список всех роутеров для удобства регистрации
 all_routers = [
@@ -17,4 +18,5 @@ all_routers = [
     ownership_router,
     restrictions_router,
     deals_router,
+    auth_router,
 ]
