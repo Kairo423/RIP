@@ -30,7 +30,7 @@ import { Plus, Edit, Trash2, Search, Eye } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 interface ClientsSectionProps {
-  userRole: 'admin' | 'manager';
+  userRole: string;
 }
 
 interface Client {

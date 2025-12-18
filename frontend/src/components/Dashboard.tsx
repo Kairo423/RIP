@@ -25,7 +25,7 @@ import RightsAndRestrictionsSection from './RightsAndRestrictionsSection';
 interface DashboardProps {
   user: {
     name: string;
-    role: 'admin' | 'manager';
+    role: string;
   };
   onLogout: () => void;
 }

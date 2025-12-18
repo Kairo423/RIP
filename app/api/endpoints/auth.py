@@ -13,7 +13,9 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     user_id: int
     login: str
-    message: str = "Login successful"
+    full_name: str
+    role: str
+
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -34,5 +36,6 @@ def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
     return LoginResponse(
         user_id=db_user.id,
         login=db_user.login,
-        message=f"Welcome, {db_user.login}!"
+        full_name=db_user.full_name,
+        role=db_user.role,
     )

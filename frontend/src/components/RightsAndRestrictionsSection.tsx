@@ -30,7 +30,7 @@ import { Input } from './ui/input';
 import { Plus, Edit, Trash2, History } from 'lucide-react';
 
 interface RightsAndRestrictionsSectionProps {
-  userRole: 'admin' | 'manager';
+  userRole: string;
 }
 
 interface Right {

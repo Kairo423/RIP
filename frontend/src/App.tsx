@@ -11,28 +11,42 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<{
     name: string;
-    role: 'admin' | 'manager';
+    role: string;
   } | null>(null);
   const [loginError, setLoginError] = useState<string>(''); // Для ошибок
 
   // ОБНОВЛЁННАЯ ФУНКЦИЯ ЛОГИНА
-  const handleLogin = async (username: string, password: string) => {
+  const handleLogin = async (login: string, password: string) => {
     try {
       // 1. Сбрасываем предыдущую ошибку
       setLoginError('');
       
       // 2. Отправляем запрос к вашему эндпоинту /auth/login
       const response = await axios.post('/auth/login', {
-        login: username,
+        login: login,
         password: password,
       });
       
       // 3. Если успешно (код 200) - сохраняем данные пользователя
       console.log('Успешный вход!', response.data);
       
+      const serverData = response.data;
+
+      // Преобразуем роль к нужному типу
+      // let userRole;
+      // if (serverData.role === "admin") {
+      //   userRole = 'admin';
+      // } else if (serverData.role === 'manager') {
+      //   userRole = 'manager';
+      // } else {
+      //   // Если роль не определена или другая - используем значение по умолчанию
+      //   console.warn(`Неизвестная роль от сервера: "${serverData.role}", использую "manager"`);
+      //   userRole = 'manager';
+      // }
+
       setCurrentUser({
-        name: response.data.login,
-        role: username === 'admin' ? 'admin' : 'manager'
+        name: response.data.full_name,
+        role: response.data.role,
       });
       
       setIsAuthenticated(true);

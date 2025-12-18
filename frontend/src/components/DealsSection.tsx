@@ -30,7 +30,7 @@ import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 interface DealsSectionProps {
-  userRole: 'admin' | 'manager';
+  userRole: string;
 }
 
 interface Deal {

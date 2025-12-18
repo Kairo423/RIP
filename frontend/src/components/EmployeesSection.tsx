@@ -30,7 +30,7 @@ import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Badge } from './ui/badge';
 
 interface EmployeesSectionProps {
-  userRole: 'admin' | 'manager';
+  userRole: string;
 }
 
 interface Employee {

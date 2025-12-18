@@ -11,6 +11,9 @@ class User(SQLModel, table=True):
     login: str = Field(nullable=False, unique=True, max_length=50)
     password: str = Field(nullable=False, max_length=200)
     full_name: str = Field(nullable=False, max_length=200)
+    #first_name: str = Field(nullable=False, max_length=200)
+    #surname: str = Field(nullable=False, max_length=200)
+    #middle_name: str = Field(nullable=False, max_length=200)
     position: Optional[str] = Field(default=None, max_length=100)
     role: Optional[str] = Field(default=None, max_length=50)
     
