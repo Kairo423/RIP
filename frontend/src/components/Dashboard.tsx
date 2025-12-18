@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import axios from 'axios';
 import { 
   Home, 
   Users, 
@@ -32,8 +33,45 @@ interface DashboardProps {
 
 type Section = 'home' | 'properties' | 'clients' | 'deals' | 'employees' | 'reports' | 'rights';
 
+interface RecentDeal {
+  client: string;
+  property: string;
+  amount: number;
+}
+
+interface NewProperty {
+  address: string;
+  type: string;
+  price: number;
+}
+
+interface DashboardStats {
+  total_properties: number;
+  total_clients: number;
+  active_deals: number;
+}
+
+interface DashboardData {
+  stats: DashboardStats;
+  recent_deals: RecentDeal[];
+  new_properties: NewProperty[];
+}
+
 export default function Dashboard({ user, onLogout }: DashboardProps) {
   const [activeSection, setActiveSection] = useState<Section>('home');
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+
+  useEffect(() => {
+   axios.get('/dashboard/')
+     .then((response) => setDashboardData(response.data))
+     .catch((err) => console.error('Failed to load dashboard data', err));
+  }, []);
+
+  if (!dashboardData) {
+    return <div>Loading...</div>;
+  }
+
+  const { stats, recent_deals, new_properties } = dashboardData;
 
   const menuItems = [
     { id: 'home' as Section, label: 'Главная', icon: Home },
@@ -58,8 +96,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <Building2 className="h-4 w-4 text-[#1677ff]" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl">247</div>
-                  <p className="text-xs text-gray-500">+12 за месяц</p>
+                  <div className="text-2xl">{stats.total_properties}</div>
                 </CardContent>
               </Card>
               <Card className="shadow-sm">
@@ -68,8 +105,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <Users className="h-4 w-4 text-[#1677ff]" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl">1,834</div>
-                  <p className="text-xs text-gray-500">+48 за месяц</p>
+                  <div className="text-2xl">{stats.total_clients}</div>
                 </CardContent>
               </Card>
               <Card className="shadow-sm">
@@ -78,18 +114,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                   <TrendingUp className="h-4 w-4 text-[#1677ff]" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl">23</div>
-                  <p className="text-xs text-gray-500">8 в процессе</p>
-                </CardContent>
-              </Card>
-              <Card className="shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm">Доход за месяц</CardTitle>
-                  <DollarSign className="h-4 w-4 text-[#1677ff]" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl">₽4.2M</div>
-                  <p className="text-xs text-gray-500">+18% к прошлому</p>
+                  <div className="text-2xl">{stats.active_deals}</div>
                 </CardContent>
               </Card>
             </div>
@@ -101,17 +126,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {[
-                      { client: 'Иванов И.И.', property: 'Квартира, ул. Ленина 45', amount: '₽8,500,000' },
-                      { client: 'Петрова М.С.', property: 'Дом, пос. Солнечный', amount: '₽12,000,000' },
-                      { client: 'Сидоров А.В.', property: 'Квартира, ул. Мира 12', amount: '₽6,200,000' }
-                    ].map((deal, idx) => (
+                    {recent_deals.map((deal, idx) => (
                       <div key={idx} className="flex items-center justify-between pb-3 border-b last:border-0 last:pb-0">
                         <div>
                           <p className="text-sm">{deal.client}</p>
                           <p className="text-xs text-gray-500">{deal.property}</p>
                         </div>
-                        <div className="text-sm">{deal.amount}</div>
+                        <div className="text-sm">₽{deal.amount.toLocaleString()}</div>
                       </div>
                     ))}
                   </div>
@@ -124,17 +145,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {[
-                      { address: 'ул. Пушкина 23', type: 'Квартира', price: '₽7,500,000' },
-                      { address: 'пр. Победы 8', type: 'Офис', price: '₽15,000,000' },
-                      { address: 'ул. Гагарина 56', type: 'Квартира', price: '₽5,800,000' }
-                    ].map((property, idx) => (
+                    {new_properties.map((property, idx) => (
                       <div key={idx} className="flex items-center justify-between pb-3 border-b last:border-0 last:pb-0">
                         <div>
                           <p className="text-sm">{property.address}</p>
                           <p className="text-xs text-gray-500">{property.type}</p>
                         </div>
-                        <div className="text-sm">{property.price}</div>
+                        <div className="text-sm">₽{property.price.toLocaleString()}</div>
                       </div>
                     ))}
                   </div>
